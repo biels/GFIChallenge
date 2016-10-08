@@ -5,7 +5,7 @@ package gfi.gfichallenge.entities;
  */
 public class Event {
     Animation  animation;
-    Long startIntant;
+    Long startInstant;
 
     public Animation getAnimation() {
         return animation;
@@ -16,10 +16,10 @@ public class Event {
     }
 
     public Long getStartIntant() {
-        return startIntant;
+        return startInstant;
     }
 
     public void setStartIntant(Long startIntant) {
-        this.startIntant = startIntant;
+        this.startInstant = startIntant;
     }
 }
