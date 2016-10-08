@@ -7,11 +7,6 @@ public class AnimationFrame {
     String color;
     int time;
 
-    public AnimationFrame(String color, int time) {
-        this.color = color;
-        this.time = time;
-    }
-
     public String getColor() {
         return color;
     }

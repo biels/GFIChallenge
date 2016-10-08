@@ -9,10 +9,6 @@ import java.util.List;
 public class Animation {
     List<AnimationFrame> animationFrames = new ArrayList<>();
 
-    public void add(AnimationFrame element) {
-        animationFrames.add(element);
-    }
-
     public List<AnimationFrame> getAnimationFrames() {
         return animationFrames;
     }
