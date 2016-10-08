@@ -23,4 +23,10 @@ public class ExampleInstrumentedTest {
 
         assertEquals("gfi.gfichallenge", appContext.getPackageName());
     }
+    @Test
+    public void isEventClientCorrect(){
+        EventClient c = new EventClient();
+        c.refresh();
+        assertTrue(c.getEvent().getAnimation().getAnimationFrames().size() > 0);
+    }
 }
