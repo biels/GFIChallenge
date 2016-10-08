@@ -1,25 +1,32 @@
 package gfi.gfichallenge;
 
 import android.annotation.SuppressLint;
-import android.os.AsyncTask;
+import android.graphics.Color;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.client.RestTemplate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import gfi.gfichallenge.entities.Animation;
+import gfi.gfichallenge.entities.AnimationFrame;
 import gfi.gfichallenge.entities.Event;
+import gfi.gfichallenge.EventClient;
+
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
 public class FullscreenActivity extends AppCompatActivity {
+
+
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -65,6 +72,25 @@ public class FullscreenActivity extends AppCompatActivity {
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
         findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+        EventClient eventClient = new EventClient();
+        //eventClient.refresh();
+        //Event e = eventClient.getEvent();
+        Event e = new Event();
+        e.setStartIntant(1L);
+        Animation animation = new Animation();
+        List<AnimationFrame> animationFrames = new ArrayList<>();
+        AnimationFrame af1 = new AnimationFrame();
+        AnimationFrame af2 = new AnimationFrame();
+        af1.setColor("#ffff00");
+        af2.setColor("#ffffff");
+        af1.setTime(2000);
+        af2.setTime(5);
+        animationFrames.add(af1);
+        animationFrames.add(af2);
+
+        animation.setAnimationFrames(animationFrames);
+        e.setAnimation(animation);
+        runEvent(e);
     }
 
     @Override
@@ -172,4 +198,45 @@ public class FullscreenActivity extends AppCompatActivity {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
+
+    private void runEvent(final Event e) {
+        Long startInstant = e.getStartIntant();
+        Animation a = e.getAnimation();
+        final List<AnimationFrame> animationFrames = a.getAnimationFrames();
+        final Timer timer = new Timer();
+        timer.schedule(
+                new TimerTask() {
+                    @Override
+                    public void run() {
+                        int i = 0;
+                        runFrames(animationFrames,i);
+                    }
+                }
+                ,startInstant
+          );
+    }
+
+
+    private void runFrames(final List<AnimationFrame> animationFrames, final int i) {
+        final AnimationFrame af = animationFrames.get(i);
+        FullscreenActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mContentView.setBackgroundColor(Color.parseColor(af.getColor()));
+
+                //getWindow().getDecorView().setBackgroundColor(Color.parseColor(af.getColor()));
+            }
+        });
+        if (i < animationFrames.size() - 1) {
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    runFrames(animationFrames, i+1);
+                }
+            }, af.getTime());
+        }
+        return;
+    }
+
 }
