@@ -1,6 +1,7 @@
 package gfi.gfichallenge;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,11 +9,24 @@ import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import gfi.gfichallenge.entities.Animation;
+import gfi.gfichallenge.entities.AnimationFrame;
+import gfi.gfichallenge.entities.Event;
+import gfi.gfichallenge.EventClient;
+
+
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
 public class FullscreenActivity extends AppCompatActivity {
+
+
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -58,6 +72,10 @@ public class FullscreenActivity extends AppCompatActivity {
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
         findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+        EventClient eventClient = new EventClient();
+        eventClient.refresh();
+        Event e = eventClient.getEvent();
+        runEvent(e);
     }
 
     @Override
@@ -165,4 +183,38 @@ public class FullscreenActivity extends AppCompatActivity {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
+
+    private void runEvent(final Event e) {
+        Long startInstant = e.getStartIntant();
+        Animation a = e.getAnimation();
+        final List<AnimationFrame> animationFrames = a.getAnimationFrames();
+        final Timer timer = new Timer();
+        timer.schedule(
+                new TimerTask() {
+                    @Override
+                    public void run() {
+                        int i = 0;
+                        runFrames(animationFrames,i);
+                    }
+                }
+                ,startInstant
+          );
+    }
+
+
+    private void runFrames(final List<AnimationFrame> animationFrames, final int i) {
+        AnimationFrame af = animationFrames.get(i);
+        getWindow().getDecorView().setBackgroundColor(Color.parseColor(af.getColor()));
+        if (i < animationFrames.size() - 1) {
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    runFrames(animationFrames, i);
+                }
+            }, af.getTime());
+        }
+        return;
+    }
+
 }
