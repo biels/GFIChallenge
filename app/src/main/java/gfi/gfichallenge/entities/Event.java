@@ -15,11 +15,11 @@ public class Event {
         this.animation = animation;
     }
 
-    public Long getStartIntant() {
+    public Long getStartInstant() {
         return startInstant;
     }
 
-    public void setStartIntant(Long startIntant) {
-        this.startInstant = startIntant;
+    public void setStartInstant(Long startInstant) {
+        this.startInstant = startInstant;
     }
 }
