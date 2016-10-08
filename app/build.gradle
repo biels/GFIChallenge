@@ -18,7 +18,11 @@ android {
         }
     }
 }
-
+repositories {
+    maven {
+        url 'https://repo.spring.io/libs-milestone'
+    }
+}
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -26,5 +30,6 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:support-v4:24.2.1'
+    compile 'org.springframework.android:spring-android-rest-template:2.0.0.M3'
     testCompile 'junit:junit:4.12'
 }
