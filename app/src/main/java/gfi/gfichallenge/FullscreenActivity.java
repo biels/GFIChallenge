@@ -73,9 +73,9 @@ public class FullscreenActivity extends AppCompatActivity {
         // while interacting with the UI.
         findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
         EventClient eventClient = new EventClient();
-        //eventClient.refresh();
-        //Event e = eventClient.getEvent();
-        Event e = new Event();
+        eventClient.refresh();
+        Event e = eventClient.getEvent();
+        /*Event e = new Event();
         e.setStartIntant(1L);
         Animation animation = new Animation();
         List<AnimationFrame> animationFrames = new ArrayList<>();
@@ -86,10 +86,10 @@ public class FullscreenActivity extends AppCompatActivity {
         af1.setTime(2000);
         af2.setTime(5);
         animationFrames.add(af1);
-        animationFrames.add(af2);
+        animationFrames.add(af2);*/
 
-        animation.setAnimationFrames(animationFrames);
-        e.setAnimation(animation);
+        //animation.setAnimationFrames(animationFrames);
+        //e.setAnimation(animation);
         runEvent(e);
     }
 
