@@ -32,5 +32,7 @@ dependencies {
     compile 'com.android.support:support-v4:24.2.1'
     compile 'org.springframework.android:spring-android-rest-template:2.0.0.M3'
     compile 'com.android.support:design:24.2.1'
+    compile 'com.android.support:percent:22.2.0'
+
     testCompile 'junit:junit:4.12'
 }
