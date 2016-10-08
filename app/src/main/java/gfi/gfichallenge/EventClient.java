@@ -1,5 +1,6 @@
 package gfi.gfichallenge;
 
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 import gfi.gfichallenge.entities.Event;
@@ -18,6 +19,8 @@ public class EventClient {
     }
     private Event requestEvent(){
         RestTemplate restTemplate = new RestTemplate();
+        // Add the String message converter
+        restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
         Event result = restTemplate.getForObject(uri, Event.class);
         return result;
     }
