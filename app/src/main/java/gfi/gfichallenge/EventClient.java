@@ -45,7 +45,6 @@ public class EventClient {
                 restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
                 result = restTemplate.getForObject(uri, Event.class);
 
-
             } catch (Exception e) {
                 Log.e("EventClient", e.getMessage());
             }

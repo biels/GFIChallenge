@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ import gfi.gfichallenge.EventClient;
  */
 public class FullscreenActivity extends AppCompatActivity {
 
-
+    EventClient eventClient = new EventClient();
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -59,7 +60,7 @@ public class FullscreenActivity extends AppCompatActivity {
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
 
-
+        eventClient.refresh();
         // Set up the user interaction to manually show or hide the system UI.
         mContentView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,9 +73,9 @@ public class FullscreenActivity extends AppCompatActivity {
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
         findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
-        EventClient eventClient = new EventClient();
+
         eventClient.refresh();
-        Event e = eventClient.getEvent();
+
         /*Event e = new Event();
         e.setStartIntant(1L);
         Animation animation = new Animation();
@@ -90,7 +91,7 @@ public class FullscreenActivity extends AppCompatActivity {
 
         //animation.setAnimationFrames(animationFrames);
         //e.setAnimation(animation);
-        runEvent(e);
+
     }
 
     @Override
@@ -114,7 +115,7 @@ public class FullscreenActivity extends AppCompatActivity {
             if (AUTO_HIDE) {
                 delayedHide(AUTO_HIDE_DELAY_MILLIS);
             }
-            
+            runEvent(eventClient.getEvent());
             return false;
         }
     };
@@ -201,7 +202,14 @@ public class FullscreenActivity extends AppCompatActivity {
     }
 
     private void runEvent(final Event e) {
-        Long startInstant = e.getStartIntant();
+        final TextView textView = (TextView) findViewById(R.id.fullscreen_content);
+        if(e == null){
+            textView.setText("Loading");
+            return;
+        }else{
+            textView.setText("#");
+        }
+        Long startInstant = e.getTimeToStart();
         Animation a = e.getAnimation();
         final List<AnimationFrame> animationFrames = a.getAnimationFrames();
         final Timer timer = new Timer();
