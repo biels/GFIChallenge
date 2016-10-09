@@ -13,10 +13,16 @@ import gfi.gfichallenge.entities.Event;
  */
 
 public class EventClient {
+    final int pos;
     final String localhost = "10.192.127.192";
     final int port = 8080;
     final String uri = "http://" + localhost + ":" + port + "/event";
     private Event event;
+
+    public EventClient(int pos) {
+        this.pos = pos;
+    }
+
     public void refresh(){
         requestEvent();
     }
@@ -43,7 +49,7 @@ public class EventClient {
                 RestTemplate restTemplate = new RestTemplate();
                 // Add the String message converter
                 restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
-                result = restTemplate.getForObject(uri, Event.class);
+                result = restTemplate.getForObject(uri + "?pos="+ pos, Event.class);
 
             } catch (Exception e) {
                 Log.e("EventClient", e.getMessage());
