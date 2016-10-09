@@ -52,7 +52,7 @@ public class FullscreenActivity extends AppCompatActivity {
 
     private int code;
 
-    private int mInterval = 3000; // 5 seconds by default, can be changed later
+    private int mInterval = 1000; // 5 seconds by default, can be changed later
     private Handler mHandler;
 
     @Override
