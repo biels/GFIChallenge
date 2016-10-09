@@ -2,9 +2,14 @@ package gfi.gfichallenge;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.util.Date;
 
 import gfi.gfichallenge.entities.ScheduledSequence;
 
@@ -19,10 +24,29 @@ public class ScheduledSequenceClient {
     final private String uri = "http://" + localhost + ":" + port + "/event/sequence";
     private ScheduledSequence event;
 
+    public Long getPing() {
+        return ping;
+    }
+
+    public void setPing(Long ping) {
+        this.ping = ping;
+    }
+
+    private Long ping;
+
     public ScheduledSequenceClient(int pos) {
         this.pos = pos;
     }
-
+    public void updatePing(){
+        long currentTime = new Date().getTime();
+        try {
+            boolean isPinged = InetAddress.getByName(localhost).isReachable(2000); // 2 seconds
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        currentTime = new Date().getTime() - currentTime;
+        ping = currentTime;
+    }
     public void refresh(){
         requestScheduledSequence();
     }

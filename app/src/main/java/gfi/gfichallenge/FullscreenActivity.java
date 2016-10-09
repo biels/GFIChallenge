@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 import java.util.Timer;
@@ -25,7 +26,8 @@ import gfi.gfichallenge.entities.SequenceFrame;
  * status bar and navigation/system bar) with user interaction.
  */
 public class FullscreenActivity extends AppCompatActivity {
-
+    final int TICKS_TO_PING = 10;
+    int ticksToPing = 0;
     ScheduledSequenceClient scheduledSequenceClient = null;
     ScheduledSequence currentScheduledSequence = null;
     /**
@@ -222,7 +224,7 @@ public class FullscreenActivity extends AppCompatActivity {
         }else{
             textView.setText("#" + code);
         }
-        Long timeToStart = e.getTimeToStart();
+        Long timeToStart = e.getTimeToStart() - scheduledSequenceClient.getPing() / 2;
         if (timeToStart > 0) {
             Sequence a = e.getSequence();
             final List<SequenceFrame> sequenceFrames = a.getSequenceFrames();
@@ -285,7 +287,17 @@ public class FullscreenActivity extends AppCompatActivity {
         @Override
         public void run() {
             try {
-                updateEvent(); //this function can change value of mInterval.
+                if(ticksToPing <= 0){
+                    scheduledSequenceClient.updatePing();
+                    ticksToPing = TICKS_TO_PING;
+                }else {
+                    updateEvent();
+                    ticksToPing--;
+                }
+                if(ticksToPing == TICKS_TO_PING -1){
+                    Toast.makeText(getApplicationContext(), "Latency: " + scheduledSequenceClient.getPing(), Toast.LENGTH_SHORT);
+                }
+                 //this function can change value of mInterval.
             } finally {
                 // 100% guarantee that this always happens, even if
                 // your update method throws an exception
