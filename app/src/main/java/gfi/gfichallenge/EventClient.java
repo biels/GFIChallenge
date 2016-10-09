@@ -13,10 +13,10 @@ import gfi.gfichallenge.entities.Event;
  */
 
 public class EventClient {
-    final int pos;
-    final String localhost = "10.192.127.192";
-    final int port = 8080;
-    final String uri = "http://" + localhost + ":" + port + "/event";
+    final private int pos;
+    final private String localhost = "10.192.127.192";
+    final private int port = 8080;
+    final private String uri = "http://" + localhost + ":" + port + "/event";
     private Event event;
 
     public EventClient(int pos) {

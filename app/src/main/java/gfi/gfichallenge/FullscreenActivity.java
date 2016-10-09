@@ -1,6 +1,7 @@
 package gfi.gfichallenge;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -10,7 +11,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -27,7 +27,8 @@ import gfi.gfichallenge.EventClient;
  */
 public class FullscreenActivity extends AppCompatActivity {
 
-    EventClient eventClient = new EventClient();
+    EventClient eventClient = null;
+    Event currentEvent = null;
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -50,17 +51,26 @@ public class FullscreenActivity extends AppCompatActivity {
     private View mControlsView;
     private boolean mVisible;
 
+
+
+    private int mInterval = 3000; // 5 seconds by default, can be changed later
+    private Handler mHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_fullscreen);
 
+        Intent intent = getIntent();
+        int code = Integer.parseInt(intent.getStringExtra("pos"));
+        eventClient = new EventClient(code);
+
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
 
-        eventClient.refresh();
+
         // Set up the user interaction to manually show or hide the system UI.
         mContentView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,7 +84,9 @@ public class FullscreenActivity extends AppCompatActivity {
         // while interacting with the UI.
         findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
 
-        eventClient.refresh();
+        //update();
+        mHandler = new Handler();
+        startRepeatingTask();
 
         /*Event e = new Event();
         e.setStartIntant(1L);
@@ -115,7 +127,7 @@ public class FullscreenActivity extends AppCompatActivity {
             if (AUTO_HIDE) {
                 delayedHide(AUTO_HIDE_DELAY_MILLIS);
             }
-            runEvent(eventClient.getEvent());
+            //runEvent(eventClient.getEvent());
             return false;
         }
     };
@@ -209,20 +221,22 @@ public class FullscreenActivity extends AppCompatActivity {
         }else{
             textView.setText("#");
         }
-        Long startInstant = e.getTimeToStart();
-        Animation a = e.getAnimation();
-        final List<AnimationFrame> animationFrames = a.getAnimationFrames();
-        final Timer timer = new Timer();
-        timer.schedule(
-                new TimerTask() {
-                    @Override
-                    public void run() {
-                        int i = 0;
-                        runFrames(animationFrames,i);
+        Long timeToStart = e.getTimeToStart();
+        if (timeToStart > 0) {
+            Animation a = e.getAnimation();
+            final List<AnimationFrame> animationFrames = a.getAnimationFrames();
+            final Timer timer = new Timer();
+            timer.schedule(
+                    new TimerTask() {
+                        @Override
+                        public void run() {
+                            int i = 0;
+                            runFrames(animationFrames, i);
+                        }
                     }
-                }
-                ,startInstant
-          );
+                    , timeToStart
+            );
+        }
     }
 
 
@@ -248,4 +262,48 @@ public class FullscreenActivity extends AppCompatActivity {
         return;
     }
 
+    private void updateEvent() {
+        eventClient.refresh();
+        if (eventClient.getEvent() == null) {
+            return;
+        }
+
+        if (currentEvent == null) {
+            currentEvent = eventClient.getEvent();
+            runEvent(currentEvent);
+        }
+        else {
+            if (!currentEvent.getUuid().equals(eventClient.getEvent().getUuid())) {
+                currentEvent = eventClient.getEvent();
+                runEvent(currentEvent);
+            }
+        }
+    }
+
+    Runnable mStatusChecker = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                updateEvent(); //this function can change value of mInterval.
+            } finally {
+                // 100% guarantee that this always happens, even if
+                // your update method throws an exception
+                mHandler.postDelayed(mStatusChecker, mInterval);
+            }
+        }
+    };
+
+    void startRepeatingTask() {
+        mStatusChecker.run();
+    }
+
+    void stopRepeatingTask() {
+        mHandler.removeCallbacks(mStatusChecker);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopRepeatingTask();
+    }
 }
