@@ -32,20 +32,14 @@ public class ScheduledSequenceClient {
         this.ping = ping;
     }
 
-    private Long ping;
+    private Long ping = 50L;
 
     public ScheduledSequenceClient(int pos) {
         this.pos = pos;
     }
     public void updatePing(){
-        long currentTime = new Date().getTime();
-        try {
-            boolean isPinged = InetAddress.getByName(localhost).isReachable(2000); // 2 seconds
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        currentTime = new Date().getTime() - currentTime;
-        ping = currentTime;
+       GetPingTask getPingTask = new GetPingTask();
+        getPingTask.execute();
     }
     public void refresh(){
         requestScheduledSequence();
@@ -57,6 +51,26 @@ public class ScheduledSequenceClient {
 
     public ScheduledSequence getEvent() {
         return event;
+    }
+    private class GetPingTask extends  AsyncTask<Void, Void, Long>{
+
+        @Override
+        protected Long doInBackground(Void... voids) {
+            long currentTime = new Date().getTime();
+            try {
+                boolean isPinged = InetAddress.getByName(localhost).isReachable(2000); // 2 seconds
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            currentTime = new Date().getTime() - currentTime;
+            return currentTime;
+        }
+
+        @Override
+        protected void onPostExecute(Long aLong) {
+            super.onPostExecute(aLong);
+            ping = aLong;
+        }
     }
     private class GetDataTask extends AsyncTask<Void, Void, ScheduledSequence> {
 

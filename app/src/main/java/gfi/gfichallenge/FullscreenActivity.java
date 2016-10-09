@@ -224,7 +224,8 @@ public class FullscreenActivity extends AppCompatActivity {
         }else{
             textView.setText("#" + code);
         }
-        Long timeToStart = e.getTimeToStart() - scheduledSequenceClient.getPing() / 2;
+        final long halfPing = scheduledSequenceClient.getPing() / 2;
+        Long timeToStart = e.getTimeToStart() - halfPing;
         if (timeToStart > 0) {
             Sequence a = e.getSequence();
             final List<SequenceFrame> sequenceFrames = a.getSequenceFrames();
@@ -294,8 +295,8 @@ public class FullscreenActivity extends AppCompatActivity {
                     updateEvent();
                     ticksToPing--;
                 }
-                if(ticksToPing == TICKS_TO_PING -1){
-                    Toast.makeText(getApplicationContext(), "Latency: " + scheduledSequenceClient.getPing(), Toast.LENGTH_SHORT);
+                if(ticksToPing == TICKS_TO_PING - 1){
+                    Toast.makeText(getApplicationContext(), "Latency: " + scheduledSequenceClient.getPing() / 2, Toast.LENGTH_SHORT).show();
                 }
                  //this function can change value of mInterval.
             } finally {
