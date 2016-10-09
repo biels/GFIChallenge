@@ -5,7 +5,7 @@
     <string name="dummy_content">#</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="code">CODE</string>
-    <string name="scan">SCAN</string>
+    <string name="scan">CONNECT</string>
     <string name="weshineit">WeShineIT</string>
     <string name="code_hint">CODE</string>
 </resources>

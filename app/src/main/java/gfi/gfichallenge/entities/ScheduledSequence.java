@@ -17,6 +17,9 @@ public class ScheduledSequence {
         this.uuid = uuid;
     }
 
+    public ScheduledSequence() {
+    }
+
     public Long getTimeToStart() {
         return timeToStart;
     }
