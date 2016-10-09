@@ -225,7 +225,7 @@ public class FullscreenActivity extends AppCompatActivity {
             textView.setText("#" + code);
         }
         final long halfPing = scheduledSequenceClient.getPing() / 2;
-        Long timeToStart = e.getTimeToStart() - halfPing;
+        Long timeToStart = e.getTimeToStart() + halfPing;
         if (timeToStart > 0) {
             Sequence a = e.getSequence();
             final List<SequenceFrame> sequenceFrames = a.getSequenceFrames();
