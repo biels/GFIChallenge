@@ -25,7 +25,7 @@ public class ExampleInstrumentedTest {
     }
     @Test
     public void isEventClientCorrect(){
-        EventClient c = new EventClient();
+        ScheduledSequenceClient c = new ScheduledSequenceClient();
         c.refresh();
         assertTrue(c.getEvent().getSequence().getSequenceFrames().size() > 0);
     }

@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import gfi.gfichallenge.entities.ScheduledSequence;
 import gfi.gfichallenge.entities.Sequence;
 import gfi.gfichallenge.entities.SequenceFrame;
-import gfi.gfichallenge.entities.Event;
 
 
 /**
@@ -26,8 +26,8 @@ import gfi.gfichallenge.entities.Event;
  */
 public class FullscreenActivity extends AppCompatActivity {
 
-    EventClient eventClient = null;
-    Event currentEvent = null;
+    ScheduledSequenceClient scheduledSequenceClient = null;
+    ScheduledSequence currentScheduledSequence = null;
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -63,7 +63,7 @@ public class FullscreenActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         code = Integer.parseInt(intent.getStringExtra("pos"));
-        eventClient = new EventClient(code);
+        scheduledSequenceClient = new ScheduledSequenceClient(code);
 
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
@@ -128,7 +128,7 @@ public class FullscreenActivity extends AppCompatActivity {
             if (AUTO_HIDE) {
                 delayedHide(AUTO_HIDE_DELAY_MILLIS);
             }
-            //runEvent(eventClient.getEvent());
+            //runEvent(scheduledSequenceClient.getEvent());
             return false;
         }
     };
@@ -214,7 +214,7 @@ public class FullscreenActivity extends AppCompatActivity {
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
-    private void runEvent(final Event e) {
+    private void runEvent(final ScheduledSequence e) {
         final TextView textView = (TextView) findViewById(R.id.fullscreen_content);
         if(e == null){
             textView.setText("Loading");
@@ -264,19 +264,19 @@ public class FullscreenActivity extends AppCompatActivity {
     }
 
     private void updateEvent() {
-        eventClient.refresh();
-        if (eventClient.getEvent() == null) {
+        scheduledSequenceClient.refresh();
+        if (scheduledSequenceClient.getEvent() == null) {
             return;
         }
 
-        if (currentEvent == null) {
-            currentEvent = eventClient.getEvent();
-            runEvent(currentEvent);
+        if (currentScheduledSequence == null) {
+            currentScheduledSequence = scheduledSequenceClient.getEvent();
+            runEvent(currentScheduledSequence);
         }
         else {
-            if (!currentEvent.getUuid().equals(eventClient.getEvent().getUuid())) {
-                currentEvent = eventClient.getEvent();
-                runEvent(currentEvent);
+            if (!currentScheduledSequence.getUuid().equals(scheduledSequenceClient.getEvent().getUuid())) {
+                currentScheduledSequence = scheduledSequenceClient.getEvent();
+                runEvent(currentScheduledSequence);
             }
         }
     }
