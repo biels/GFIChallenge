@@ -6,15 +6,15 @@ import java.util.UUID;
  * Created by Biel on 8/10/2016.
  */
 public class Event {
-    Animation  animation;
+    Sequence sequence;
     Long timeToStart;
     UUID uuid;
-    public Animation getAnimation() {
-        return animation;
+    public Sequence getSequence() {
+        return sequence;
     }
 
-    public void setAnimation(Animation animation) {
-        this.animation = animation;
+    public void setSequence(Sequence sequence) {
+        this.sequence = sequence;
     }
 
     public Long getTimeToStart() {

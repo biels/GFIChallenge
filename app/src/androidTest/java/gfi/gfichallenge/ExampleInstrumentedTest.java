@@ -27,6 +27,6 @@ public class ExampleInstrumentedTest {
     public void isEventClientCorrect(){
         EventClient c = new EventClient();
         c.refresh();
-        assertTrue(c.getEvent().getAnimation().getAnimationFrames().size() > 0);
+        assertTrue(c.getEvent().getSequence().getSequenceFrames().size() > 0);
     }
 }

@@ -15,10 +15,9 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import gfi.gfichallenge.entities.Animation;
-import gfi.gfichallenge.entities.AnimationFrame;
+import gfi.gfichallenge.entities.Sequence;
+import gfi.gfichallenge.entities.SequenceFrame;
 import gfi.gfichallenge.entities.Event;
-import gfi.gfichallenge.EventClient;
 
 
 /**
@@ -51,7 +50,7 @@ public class FullscreenActivity extends AppCompatActivity {
     private View mControlsView;
     private boolean mVisible;
 
-
+    private int code;
 
     private int mInterval = 3000; // 5 seconds by default, can be changed later
     private Handler mHandler;
@@ -63,12 +62,14 @@ public class FullscreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_fullscreen);
 
         Intent intent = getIntent();
-        int code = Integer.parseInt(intent.getStringExtra("pos"));
+        code = Integer.parseInt(intent.getStringExtra("pos"));
         eventClient = new EventClient(code);
 
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
+
+
 
 
         // Set up the user interaction to manually show or hide the system UI.
@@ -219,19 +220,19 @@ public class FullscreenActivity extends AppCompatActivity {
             textView.setText("Loading");
             return;
         }else{
-            textView.setText("#");
+            textView.setText("#" + code);
         }
         Long timeToStart = e.getTimeToStart();
         if (timeToStart > 0) {
-            Animation a = e.getAnimation();
-            final List<AnimationFrame> animationFrames = a.getAnimationFrames();
+            Sequence a = e.getSequence();
+            final List<SequenceFrame> sequenceFrames = a.getSequenceFrames();
             final Timer timer = new Timer();
             timer.schedule(
                     new TimerTask() {
                         @Override
                         public void run() {
                             int i = 0;
-                            runFrames(animationFrames, i);
+                            runFrames(sequenceFrames, i);
                         }
                     }
                     , timeToStart
@@ -240,8 +241,8 @@ public class FullscreenActivity extends AppCompatActivity {
     }
 
 
-    private void runFrames(final List<AnimationFrame> animationFrames, final int i) {
-        final AnimationFrame af = animationFrames.get(i);
+    private void runFrames(final List<SequenceFrame> sequenceFrames, final int i) {
+        final SequenceFrame af = sequenceFrames.get(i);
         FullscreenActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -250,12 +251,12 @@ public class FullscreenActivity extends AppCompatActivity {
                 //getWindow().getDecorView().setBackgroundColor(Color.parseColor(af.getColor()));
             }
         });
-        if (i < animationFrames.size() - 1) {
+        if (i < sequenceFrames.size() - 1) {
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    runFrames(animationFrames, i+1);
+                    runFrames(sequenceFrames, i+1);
                 }
             }, af.getTime());
         }

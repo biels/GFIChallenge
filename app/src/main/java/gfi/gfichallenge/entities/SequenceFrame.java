@@ -3,7 +3,7 @@ package gfi.gfichallenge.entities;
 /**
  * Created by Biel on 8/10/2016.
  */
-public class AnimationFrame {
+public class SequenceFrame {
     String color;
     int time;
 
